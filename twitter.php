@@ -36,7 +36,7 @@ class Twitter
      */
     private function _checkSettings($settings)
     {
-        return empty($settings['consumer_key']) or empty($settings['consumer_secret']) or empty($settings['oauth_access_token']) or empty($settings['oauth_access_token_secret'])) ? false : true;
+        return empty($settings['consumer_key']) or empty($settings['consumer_secret']) or empty($settings['oauth_access_token']) or empty($settings['oauth_access_token_secret']) ? false : true;
     }
 
     /**
