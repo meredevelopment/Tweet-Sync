@@ -7,10 +7,10 @@
  *
  * @category  TweetSync
  * @package   Wordpress
- * @author    Dan Gates <dan@by-robots.com>
- * @copyright 2013 NaN Bug/Dan Gates
+ * @author    By Robots
+ * @copyright 2013 By Robots
  * @license   Usage strictly forbidden.
- * @link      https://github.com/dangates/Tweet-Sync
+ * @link      https://github.com/by-robots
  */
 
 /**
@@ -18,9 +18,9 @@
  *
  * @category TweetSync
  * @package  Wordpress
- * @author   Dan Gates <dan@by-robots.com>
+ * @author   By Robots
  * @license  Usage strictly forbidden.
- * @link     https://github.com/dangates/Tweet-Sync
+ * @link     https://github.com/by-robots
  */
 class Tweet2Post
 {

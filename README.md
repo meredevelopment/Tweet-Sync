@@ -1,4 +1,4 @@
 Tweet Sync for Wordpress
 ==========
 
-Automatically grab your tweets from Twitter and save them as blog posts.
+Automatically grab your tweets and sync them in Wordpress as posts.

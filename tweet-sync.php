@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: Tweet Sync
- * Plugin URI: https://github.com/dangates/Tweet-Sync
- * Description: Automatically grab your tweets from Twitter and save them as blog posts.
- * Version: 0.1
+ * Plugin URI: https://github.com/by-robots/Tweet-Sync
+ * Description: Automatically grab your tweets from Twitter and syncs them as blog posts in Wordpress.
+ * Version: 1.0
  * Author: By Robots
- * Author URI: http://www.by-robots.com
+ * Author URI: https://github.com/by-robots
  * License: DBAD
  */
 class Tweet_Sync
