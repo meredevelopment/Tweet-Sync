@@ -65,7 +65,7 @@ class Twitter
         $getFields     = '?screen_name=' . $screenName;
 
         // Make the request
-        include_once 'TwitterAPIExchange.php';
+        include_once 'twitter-api-php/TwitterAPIExchange.php';
         $twitter = new TwitterAPIExchange($settings);
 
         die('<pre>' . print_r($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest(), 1));
