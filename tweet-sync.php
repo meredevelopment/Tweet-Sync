@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: Tweet Sync
  * Plugin URI: https://github.com/dangates/Tweet-Sync
@@ -8,7 +9,6 @@
  * Author URI: http://www.by-robots.com
  * License: DBAD
 */
-
 class Tweet_Sync
 {
 
@@ -20,6 +20,9 @@ class Tweet_Sync
     public function __construct()
     {
         add_action('admin_menu', array(&$this, 'adminMenu'));
+
+        // Run the plugin code after the page has loaded
+        add_action('shutdown', array(&$this, 'getTweets'));
     }
 
     /**
@@ -61,8 +64,7 @@ class Tweet_Sync
         $t2p     = new Tweet2Post;
         $resp    = $twitter->getTweets();
 
-        if ( ! $t2p->saveAsPost($resp)) die('Error');
-        else                            die('Done');
+        $t2p->saveAsPost($resp);
     }
 
     /**
