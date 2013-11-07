@@ -47,7 +47,8 @@ class Tweet2Post
                 $post = wp_insert_post(array(
                     'post_title'    => $tweet->text,
                     'post_category' => array($this->categoryID),
-                    'post_status'   => 'publish'
+                    'post_status'   => 'publish',
+                    'post_date'     => date("Y-m-d H:i:s", strtotime($tweet->created_at))
                 ));
 
                 // Update the last tweet retrived value for caching if it's more recent than the one we currently have stored
