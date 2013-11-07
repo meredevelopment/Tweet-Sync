@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: Tweet Sync
  * Plugin URI: https://github.com/dangates/Tweet-Sync
@@ -68,7 +67,7 @@ class Tweet_Sync
      */
     public function getTweets()
     {
-        include_once 'twitter.php';
+        include_once 'classes/Twitter.php';
 
         $twitter = new Twitter;
         return $twitter->getTweets();
