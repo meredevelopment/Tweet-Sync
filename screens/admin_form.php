@@ -64,5 +64,6 @@
                 </p>
 
                 <input type="hidden" name="tweetsync_submitted" value="Y">
+                <?php wp_nonce_field('update_tweetsync_settings', 'tweetsync_nonce') ?>
                 <input type="submit" value="Save">
             </form>
