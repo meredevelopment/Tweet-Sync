@@ -60,7 +60,7 @@ class Tweet_Sync
         $twitter = new Twitter;
         $t2p     = new Tweet2Post;
         $resp    = $twitter->getTweets();
-die('<pre>' . print_r($resp, 1));
+
         if ( ! $t2p->saveAsPost($resp)) die('Error');
         else                            die('Done');
     }
@@ -78,6 +78,7 @@ die('<pre>' . print_r($resp, 1));
         if (isset($_POST['tweetsync_access_token_secret']) and ! empty($_POST['tweetsync_access_token_secret'])) update_option('tweetsync_access_token_secret', $_POST['tweetsync_access_token_secret']);
         if (isset($_POST['tweetsync_screen_name']))                                                              update_option('tweetsync_screen_name', $_POST['tweetsync_screen_name']);
         if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
+        if (isset($_POST['tweetsync_last_tweet']))                                                               update_option('tweetsync_last_tweet', $_POST['tweetsync_last_tweet']);
     }
 
 }

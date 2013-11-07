@@ -44,6 +44,13 @@
                     </label>
                 </p>
 
+                <p>
+                    <label>
+                        Since ID
+                        <input type="text" name="tweetsync_last_tweet" value="<?= get_option('tweetsync_last_tweet') ?>">
+                    </label>
+                </p>
+
                 <input type="hidden" name="tweetsync_submitted" value="Y">
                 <input type="submit" value="Save">
             </form>

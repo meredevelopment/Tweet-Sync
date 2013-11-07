@@ -49,7 +49,10 @@ class Twitter
      */
     private function _checkSettings($settings)
     {
-        return empty($settings['consumer_key']) or empty($settings['consumer_secret']) or empty($settings['oauth_access_token']) or empty($settings['oauth_access_token_secret']) ? false : true;
+        return empty($settings['consumer_key']) or
+               empty($settings['consumer_secret']) or
+               empty($settings['oauth_access_token']) or
+               empty($settings['oauth_access_token_secret']) ? false : true;
     }
 
     /**
@@ -62,13 +65,13 @@ class Twitter
         if ( ! $this->_checkSettings($this->settings) or empty($this->screenName)) return;
 
         // Set the final variables now we do have everything
-        $url           = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+        $url          = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
         $getField     = '?screen_name=' . $this->screenName;
-        if ( ! is_null($this->since)) $getField .= '&since_id=' . $this->since;
+        if ($this->since !== false and ! empty($this->since)) $getField .= '&since_id=' . $this->since;
 
         // Make the request
         $twitter = new TwitterAPIExchange($this->settings);
-        return $twitter->buildOauth($url, 'GET')->setGetfield($getField)->performRequest();
+        return $twitter->setGetfield($getField)->buildOauth($url, 'GET')->performRequest();
     }
 
 }
