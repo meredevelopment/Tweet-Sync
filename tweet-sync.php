@@ -8,7 +8,7 @@
  * Author: By Robots
  * Author URI: http://www.by-robots.com
  * License: DBAD
-*/
+ */
 class Tweet_Sync
 {
 

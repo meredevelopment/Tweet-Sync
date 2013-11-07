@@ -1,22 +1,21 @@
             <form name="tweetsync_form" method="post" action="<?= str_replace('%7E', '~', $_SERVER['REQUEST_URI']) ?>">
-                <p>Last checked:
+                <p>Last checked
                     <?php if (get_option('tweetsync_last_checked') !== false) echo ' ' . date("r", get_option('tweetsync_last_checked'));
-                          else                                                echo ' Not checked yet.'; ?>
-                </p>
+                          else                                                echo ' Not checked yet.'; ?>, next check in <?= get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') - time() ?> seconds.</p>
+
+                <p>Get the following four values from the <a href="https://dev.twitter.com/">Twitter Developers area</a>.</p>
 
                 <p>
                     <label>
                         Consumer Key:
-                        <?php $key = get_option('tweetsync_consumer_key') ?>
-                        <input type="text" name="tweetsync_consumer_key" value="<?= $key ?>">
+                        <input type="text" name="tweetsync_consumer_key" value="<?= get_option('tweetsync_consumer_key') ?>">
                     </label>
                 </p>
 
                 <p>
                     <label>
                         Consumer Secret:
-                        <?php $secret = get_option('tweetsync_consumer_secret') ?>
-                        <input type="text" name="tweetsync_consumer_secret"<?php echo ! empty($secret) ? ' placeholder="I won\'t tell..."' : '' ?>>
+                        <input type="text" name="tweetsync_consumer_secret"<?php echo get_option('tweetsync_consumer_secret') !== false ? ' placeholder="I won\'t tell..."' : '' ?>>
                     </label>
                 </p>
 
@@ -30,8 +29,7 @@
                 <p>
                     <label>
                         Access token secret:
-                        <?php $atSecret = get_option('tweetsync_access_token_secret') ?>
-                        <input type="text" name="tweetsync_access_token_secret"<?php echo ! empty($atSecret) ? ' placeholder="...it\'s a secret."' : '' ?>>
+                        <input type="text" name="tweetsync_access_token_secret"<?php echo get_option('tweetsync_access_token_secret') !== false ? ' placeholder="...it\'s a secret."' : '' ?>>
                     </label>
                 </p>
 
@@ -56,12 +54,16 @@
                     </label>
                 </p>
 
+                <p><strong>Note:</strong> Leaving this field blank will cause the API to be queried after every page request. This could cause the Twitter API rate limit to be hit and will use more server resources than is necessary.</p>
+
                 <p>
                     <label>
                         Since ID:
                         <input type="text" name="tweetsync_last_tweet" value="<?= get_option('tweetsync_last_tweet') ?>">
                     </label>
                 </p>
+
+                <p><strong>Important:</strong> Emptying this field will cause tweets that have already been retrieved to be fetched and stored again.</p>
 
                 <input type="hidden" name="tweetsync_submitted" value="Y">
                 <?php wp_nonce_field('update_tweetsync_settings', 'tweetsync_nonce') ?>
