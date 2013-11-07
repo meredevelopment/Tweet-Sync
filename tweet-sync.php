@@ -56,6 +56,10 @@ class Tweet_Sync
      */
     public function getTweets()
     {
+        // Before we do anything check that we are outside the check limit
+        if (get_option('tweetsync_last_checked') !== false and
+            get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') > time()) return;
+
         require_once 'twitter-api-php/TwitterAPIExchange.php';
         require_once 'classes/Twitter.php';
         require_once 'classes/Tweet2Post.php';
@@ -65,6 +69,9 @@ class Tweet_Sync
         $resp    = $twitter->getTweets();
 
         $t2p->saveAsPost($resp);
+
+        // Update when we last checked for updates
+        update_option('tweetsync_last_checked', time());
     }
 
     /**
@@ -81,6 +88,7 @@ class Tweet_Sync
         if (isset($_POST['tweetsync_screen_name']))                                                              update_option('tweetsync_screen_name', $_POST['tweetsync_screen_name']);
         if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
         if (isset($_POST['tweetsync_last_tweet']))                                                               update_option('tweetsync_last_tweet', $_POST['tweetsync_last_tweet']);
+        if (isset($_POST['tweetsync_refresh_rate']))                                                             update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
     }
 
 }
