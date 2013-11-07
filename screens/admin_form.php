@@ -37,6 +37,13 @@
                     </label>
                 </p>
 
+                <p>
+                    <label>
+                        Post category ID
+                        <input type="text" name="tweetsync_category_id" value="<?= get_option('tweetsync_category_id') ?>">
+                    </label>
+                </p>
+
                 <input type="hidden" name="tweetsync_submitted" value="Y">
                 <input type="submit" value="Save">
             </form>

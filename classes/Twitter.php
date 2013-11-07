@@ -27,6 +27,19 @@
 class Twitter
 {
 
+    public function __construct()
+    {
+        // Build our variables
+        $this->since         = get_option('tweetsync_last_tweet');
+        $this->screenName    = get_option('tweetsync_screen_name');
+        $this->settings      = array(
+            'consumer_key'              => get_option('tweetsync_consumer_key'),
+            'consumer_secret'           => get_option('tweetsync_consumer_secret'),
+            'oauth_access_token'        => get_option('tweetsync_access_token'),
+            'oauth_access_token_secret' => get_option('tweetsync_access_token_secret')
+        );
+    }
+
     /**
      * Checks we have all the OAuth tokens we need.
      *
@@ -46,26 +59,15 @@ class Twitter
      */
     public function getTweets()
     {
-        // Build our variables
-        $since         = get_option('tweetsync_last_tweet');
-        $screenName    = get_option('tweetsync_screen_name');
-        $settings      = array(
-            'consumer_key'              => get_option('tweetsync_consumer_key'),
-            'consumer_secret'           => get_option('tweetsync_consumer_secret'),
-            'oauth_access_token'        => get_option('tweetsync_access_token'),
-            'oauth_access_token_secret' => get_option('tweetsync_access_token_secret')
-        );
-
-        // Check we have everyhting
-        if ( ! $this->_checkSettings($settings) or empty($screenName)) return;
+        if ( ! $this->_checkSettings($this->settings) or empty($this->screenName)) return;
 
         // Set the final variables now we do have everything
         $requestMethod = 'GET';
         $url           = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $getFields     = '?screen_name=' . $screenName;
+        $getFields     = '?screen_name=' . $this->screenName;
 
         // Make the request
-        $twitter = new TwitterAPIExchange($settings);
+        $twitter = new TwitterAPIExchange($this->settings);
         return $twitter->buildOauth($url, $requestMethod)->performRequest();
     }
 

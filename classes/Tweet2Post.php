@@ -25,6 +25,11 @@
 class Tweet2Post
 {
 
+    public function __construct()
+    {
+        $this->categoryID = get_option('tweetsync_category_id');
+    }
+
     /**
      * Saves a tweet (or tweets) as Wordpress posts.
      *
@@ -41,7 +46,7 @@ class Tweet2Post
             if ($this->_shouldSave($tweet)) {
                 $post = wp_insert_post(array(
                     'post_title'    => $tweet->text,
-                    'post_category' => array(2)
+                    'post_category' => array($this->categoryID)
                 ));
             }
         }

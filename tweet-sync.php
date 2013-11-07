@@ -80,6 +80,7 @@ class Tweet_Sync
         if (isset($_POST['tweetsync_access_token']))                                                             update_option('tweetsync_access_token', $_POST['tweetsync_access_token']);
         if (isset($_POST['tweetsync_access_token_secret']) and ! empty($_POST['tweetsync_access_token_secret'])) update_option('tweetsync_access_token_secret', $_POST['tweetsync_access_token_secret']);
         if (isset($_POST['tweetsync_screen_name']))                                                              update_option('tweetsync_screen_name', $_POST['tweetsync_screen_name']);
+        if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
     }
 
 }
