@@ -65,18 +65,8 @@ class Twitter
         $getFields     = '?screen_name=' . $screenName;
 
         // Make the request
-        include_once 'twitter-api-php/TwitterAPIExchange.php';
         $twitter = new TwitterAPIExchange($settings);
-        $resp    = $twitter->buildOauth($url, $requestMethod)->performRequest();
-
-        include_once 'casses/Tweet2Post.php';
-        $t2p = new Tweet2Post;
-
-        if ( ! $t2p->saveAsPost($resp)) {
-            // TO DO
-        } else {
-            // TO DO
-        }
+        return $twitter->buildOauth($url, $requestMethod)->performRequest();
     }
 
 }

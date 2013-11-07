@@ -34,7 +34,33 @@ class Tweet2Post
      */
     public function saveAsPost($json)
     {
-        //
+        $tweets = json_decode($json);
+        if (isset($tweets->errors)) return false;
+
+        foreach ($tweets as $tweet) {
+            if ($this->_shouldSave($tweet)) {
+                $post = wp_insert_post(array(
+                    'post_title'    => $tweet->text,
+                    'post_category' => array(2)
+                ));
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Decide if this tweet should be added as a post or not. I'll actually do
+     * something with this function once I've got the rest of the plug-in
+     * running OK.
+     *
+     * @param object $tweet The tweet object.
+     *
+     * @return bool
+     */
+    private function _shouldSave($tweet)
+    {
+        return true;
     }
 
 }

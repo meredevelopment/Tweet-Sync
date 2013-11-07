@@ -22,7 +22,6 @@ class Tweet_Sync
         add_action('admin_menu', array(&$this, 'adminMenu'));
     }
 
-
     /**
      * Set up the admin area.
      *
@@ -32,7 +31,6 @@ class Tweet_Sync
     {
         add_menu_page('Tweet Sync', 'Tweet Sync', 'manage_options', 'tweet_sync', array($this, 'settingsPage'));
     }
-
 
     /**
      * Display the admin settings page.
@@ -48,18 +46,6 @@ class Tweet_Sync
         } else include 'screens/admin.php';
     }
 
-
-    /**
-     * Send the user off to Twitter for verification.
-     *
-     * @return void
-     */
-    public function verifyPage()
-    {
-        // TO DO
-    }
-
-
     /**
      * Get the latest tweets.
      *
@@ -67,12 +53,20 @@ class Tweet_Sync
      */
     public function getTweets()
     {
-        include_once 'classes/Twitter.php';
+        require_once 'twitter-api-php/TwitterAPIExchange.php';
+        require_once 'classes/Twitter.php';
+        require_once 'classes/Tweet2Post.php';
 
         $twitter = new Twitter;
-        return $twitter->getTweets();
-    }
+        $t2p     = new Tweet2Post;
+        $resp    = $twitter->getTweets();
 
+        if ( ! $t2p->saveAsPost($resp)) {
+            die('Error');
+        } else {
+            die('Done');
+        }
+    }
 
     /**
      * Handles admin form input.
