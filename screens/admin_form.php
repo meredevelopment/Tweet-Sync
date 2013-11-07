@@ -1,7 +1,11 @@
             <form name="tweetsync_form" method="post" action="<?= str_replace('%7E', '~', $_SERVER['REQUEST_URI']) ?>">
                 <p>Last checked
                     <?php if (get_option('tweetsync_last_checked') !== false) echo ' ' . date("r", get_option('tweetsync_last_checked'));
-                          else                                                echo ' Not checked yet.'; ?>, next check in <?= get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') - time() ?> seconds.</p>
+                          else                                                echo ' Not checked yet.'; ?>
+
+                    <?php if (get_option('tweetsync_refresh_rate') !== false and ! empty(get_option('tweetsync_refresh_rate'))) : ?>
+                        , next check in <?= get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') - time() ?> seconds.</p>
+                    <?php endif ?>
 
                 <p>Get the following four values from the <a href="https://dev.twitter.com/">Twitter Developers area</a>.</p>
 
