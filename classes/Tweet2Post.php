@@ -48,6 +48,9 @@ class Tweet2Post
                     'post_title'    => $tweet->text,
                     'post_category' => array($this->categoryID)
                 ));
+
+                // Update the last tweet retrived value for caching
+                update_option('tweetsync_last_tweet', $tweet->id);
             }
         }
 

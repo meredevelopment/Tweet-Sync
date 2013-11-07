@@ -62,13 +62,13 @@ class Twitter
         if ( ! $this->_checkSettings($this->settings) or empty($this->screenName)) return;
 
         // Set the final variables now we do have everything
-        $requestMethod = 'GET';
         $url           = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $getFields     = '?screen_name=' . $this->screenName;
+        $getField     = '?screen_name=' . $this->screenName;
+        if ( ! is_null($this->since)) $getField .= '&since_id=' . $this->since;
 
         // Make the request
         $twitter = new TwitterAPIExchange($this->settings);
-        return $twitter->buildOauth($url, $requestMethod)->performRequest();
+        return $twitter->buildOauth($url, 'GET')->setGetfield($getField)->performRequest();
     }
 
 }

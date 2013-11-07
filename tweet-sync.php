@@ -60,12 +60,9 @@ class Tweet_Sync
         $twitter = new Twitter;
         $t2p     = new Tweet2Post;
         $resp    = $twitter->getTweets();
-
-        if ( ! $t2p->saveAsPost($resp)) {
-            die('Error');
-        } else {
-            die('Done');
-        }
+die('<pre>' . print_r($resp, 1));
+        if ( ! $t2p->saveAsPost($resp)) die('Error');
+        else                            die('Done');
     }
 
     /**
