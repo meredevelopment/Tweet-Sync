@@ -68,7 +68,7 @@ class Twitter
         include_once 'twitter-api-php/TwitterAPIExchange.php';
         $twitter = new TwitterAPIExchange($settings);
 
-        die('<pre>' . print_r($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest(), 1));
+        die('<pre>' . print_r($twitter->buildOauth($url, $requestMethod)->performRequest(), 1));
     }
 
 }
