@@ -19,6 +19,14 @@ class Tweet_Sync
      */
     public function __construct()
     {
+        require_once 'twitter-api-php/TwitterAPIExchange.php';
+        require_once 'classes/Twitter.php';
+        require_once 'classes/Tweet2Post.php';
+
+        $this->twitter = new Twitter;
+        $this->t2p     = new Tweet2Post;
+
+        // Add the menu tab so settings can be edited
         add_action('admin_menu', array(&$this, 'adminMenu'));
 
         // Run the plugin code after the page has loaded
@@ -57,21 +65,12 @@ class Tweet_Sync
     public function getTweets()
     {
         // Before we do anything check that we are outside the check limit
-        if (get_option('tweetsync_last_checked') !== false and
-            get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') > time()) return;
+        if ( ! $this->_doUpdate()) return;
 
-        require_once 'twitter-api-php/TwitterAPIExchange.php';
-        require_once 'classes/Twitter.php';
-        require_once 'classes/Tweet2Post.php';
-
-        $twitter = new Twitter;
-        $t2p     = new Tweet2Post;
-        $resp    = $twitter->getTweets();
-
-        $t2p->saveAsPost($resp);
+        $this->t2p->saveAsPost($this->twitter->getTweets());
 
         // Update when we last checked for updates
-        update_option('tweetsync_last_checked', time());
+        $this->_markUpdated();
     }
 
     /**
@@ -91,6 +90,29 @@ class Tweet_Sync
         if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
         if (isset($_POST['tweetsync_last_tweet']))                                                               update_option('tweetsync_last_tweet', $_POST['tweetsync_last_tweet']);
         if (isset($_POST['tweetsync_refresh_rate']))                                                             update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
+    }
+
+    /**
+     * Should we check for updates?
+     *
+     * @return bool
+     */
+    private function _doUpdate()
+    {
+        if (get_option('tweetsync_last_checked') !== false and
+            get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') > time()) return false;
+
+        return true;
+    }
+
+    /**
+     * Update the last_checked field.
+     *
+     * @return void
+     */
+    private function _markUpdated()
+    {
+        update_option('tweetsync_last_checked', time());
     }
 
 }
