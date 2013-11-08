@@ -58,7 +58,7 @@
                     </label>
                 </p>
 
-                <p><strong>Note:</strong> Leaving this field blank will cause the API to be queried after every page request. This could cause the Twitter API rate limit to be hit and will use more server resources than is necessary.</p>
+                <p><strong>Note:</strong> Leaving this field blank will reset it to the default value (1 hour).</p>
 
                 <p>
                     <label>
