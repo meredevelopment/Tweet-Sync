@@ -9,7 +9,7 @@
  * Author URI: https://github.com/by-robots
  * License: DBAD
  */
-class Tweet_Sync
+class TweetSync
 {
 
     /**
@@ -26,11 +26,9 @@ class Tweet_Sync
         $this->twitter = new Twitter;
         $this->t2p     = new Tweet2Post;
 
-        // Add the menu tab so settings can be edited
         add_action('admin_menu', array(&$this, 'adminMenu'));
-
-        // Run the plugin code after the page has loaded
-        add_action('wp_footer', array(&$this, 'getTweets'), 1); // Low priority, don't block any scripts loading by updating
+        register_activation_hook(__FILE__, array(&$this, 'activation'));
+        register_deactivation_hook(__FILE__, array(&$this, 'deactivation'));
     }
 
     /**
@@ -41,6 +39,26 @@ class Tweet_Sync
     public function adminMenu()
     {
         add_menu_page('Tweet Sync', 'Tweet Sync', 'manage_options', 'tweet_sync', array($this, 'settingsPage'));
+    }
+
+    /**
+     * Plugin activation. Schedule auto-updates.
+     */
+    public function activation()
+    {
+        add_filter('cron_schedules', array(&$this, 'cron')); // Create the custom interval
+        $res = wp_schedule_event(time(), 'tweetsync_interval', 'tweetsync_get_tweets'); // Schedule the event
+        if ($res === false) die('Failed to schedule update.');
+
+        add_action('tweetsync_get_tweets', array(&$this, 'getTweets')); // Create the event
+    }
+
+    /**
+     * Plug-in deactivation - remove the scheduled updates.
+     */
+    public function deactivation()
+    {
+        wp_clear_scheduled_hook('tweetsync_get_tweets');
     }
 
     /**
@@ -64,13 +82,20 @@ class Tweet_Sync
      */
     public function getTweets()
     {
-        // Before we do anything check that we are outside the check limit
-        if ( ! $this->_doUpdate()) return;
-
         $this->t2p->saveAsPost($this->twitter->getTweets());
+    }
 
-        // Update when we last checked for updates
-        $this->_markUpdated();
+    /**
+     * Set up the cron execution interval
+     */
+    public function cron($schedules)
+    {
+        $schedules['tweetsync_interval'] = array(
+            'interval' => get_option('tweetsync_refresh_rate') === false ? 3600 : get_option('tweetsync_refresh_rate'),
+            'display'  =>  __('Once Every ' . get_option('tweetsync_refresh_rate') === false ? 3600 : get_option('tweetsync_refresh_rate') . ' seconds')
+        );
+
+        return $schedules;
     }
 
     /**
@@ -89,38 +114,16 @@ class Tweet_Sync
         if (isset($_POST['tweetsync_screen_name']))                                                              update_option('tweetsync_screen_name', $_POST['tweetsync_screen_name']);
         if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
         if (isset($_POST['tweetsync_last_tweet']))                                                               update_option('tweetsync_last_tweet', $_POST['tweetsync_last_tweet']);
-        if (isset($_POST['tweetsync_refresh_rate']))                                                             update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
-    }
 
-    /**
-     * Should we check for updates?
-     *
-     * @return bool
-     */
-    private function _doUpdate()
-    {
-        if (get_option('tweetsync_last_checked') !== false and
-            get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') > time()) return false;
+        if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) {
+            update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
 
-        if (get_option('tweetsync_last_checked') === false) {
-            // When the plugin first runs it can effectively enter an infinite loop on some hosting environments.
-            // That's not a whole lot of fun so to stop it we'll add a default time limit.
-            update_option('tweetsync_refresh_rate', 3600);
+            // Clear the old refresh schedule, start the new one
+            $this->deactivation();
+            $this->activation();
         }
-
-        return true;
-    }
-
-    /**
-     * Update the last_checked field.
-     *
-     * @return void
-     */
-    private function _markUpdated()
-    {
-        update_option('tweetsync_last_checked', time());
     }
 
 }
 
-new Tweet_Sync;
+new TweetSync;
