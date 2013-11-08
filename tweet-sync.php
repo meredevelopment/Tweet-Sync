@@ -23,12 +23,13 @@ class TweetSync
         require_once 'classes/Twitter.php';
         require_once 'classes/Tweet2Post.php';
 
-        $this->twitter = new Twitter;
-        $this->t2p     = new Tweet2Post;
+        add_action('admin_menu', array($this, 'adminMenu'));
+        add_action('tweetsync_get_tweets', array($this, 'getTweets')); // Create the event
 
-        add_action('admin_menu', array(&$this, 'adminMenu'));
-        register_activation_hook(__FILE__, array(&$this, 'activation'));
-        register_deactivation_hook(__FILE__, array(&$this, 'deactivation'));
+        add_filter('cron_schedules', array($this, 'cron')); // Create the custom interval
+
+        register_activation_hook(__FILE__, array($this, 'activation'));
+        register_deactivation_hook(__FILE__, array($this, 'deactivation'));
     }
 
     /**
@@ -46,11 +47,9 @@ class TweetSync
      */
     public function activation()
     {
-        add_filter('cron_schedules', array(&$this, 'cron')); // Create the custom interval
-        $res = wp_schedule_event(time(), 'tweetsync_interval', 'tweetsync_get_tweets'); // Schedule the event
-        if ($res === false) die('Failed to schedule update.');
+        if (wp_next_scheduled('tweetsync_get_tweets') !== false) $this->deactivation();
 
-        add_action('tweetsync_get_tweets', array(&$this, 'getTweets')); // Create the event
+        wp_schedule_event(time(), 'tweetsync', 'tweetsync_get_tweets'); // Schedule the event
     }
 
     /**
@@ -82,7 +81,10 @@ class TweetSync
      */
     public function getTweets()
     {
-        $this->t2p->saveAsPost($this->twitter->getTweets());
+        $twitter = new Twitter;
+        $t2p     = new Tweet2Post;
+
+        if ( ! $t2p->saveAsPost($twitter->getTweets())) __log('Error retrieving tweets.');
     }
 
     /**
@@ -90,7 +92,7 @@ class TweetSync
      */
     public function cron($schedules)
     {
-        $schedules['tweetsync_interval'] = array(
+        $schedules['tweetsync'] = array(
             'interval' => get_option('tweetsync_refresh_rate') === false ? 3600 : get_option('tweetsync_refresh_rate'),
             'display'  =>  __('Once Every ' . get_option('tweetsync_refresh_rate') === false ? 3600 : get_option('tweetsync_refresh_rate') . ' seconds')
         );
@@ -124,6 +126,19 @@ class TweetSync
         }
     }
 
+}
+
+if( ! function_exists('__log')) {
+    /**
+     * A quick function for logging issues. Used for debugging.
+     */
+    function __log($message)
+    {
+        if (WP_DEBUG === true) {
+            if(is_array( $message ) or is_object($message)) error_log(print_r( $message, 1));
+            else                                            error_log($message);
+        }
+    }
 }
 
 new TweetSync;
