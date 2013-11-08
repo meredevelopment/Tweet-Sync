@@ -102,6 +102,12 @@ class Tweet_Sync
         if (get_option('tweetsync_last_checked') !== false and
             get_option('tweetsync_last_checked') + get_option('tweetsync_refresh_rate') > time()) return false;
 
+        if (get_option('tweetsync_last_checked') === false) {
+            // When the plugin first runs it can effectively enter an infinite loop on some hosting environments.
+            // That's not a whole lot of fun so to stop it we'll add a default time limit.
+            update_option('tweetsync_refresh_rate', 3600);
+        }
+
         return true;
     }
 
