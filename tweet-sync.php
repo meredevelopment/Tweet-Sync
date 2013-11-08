@@ -30,7 +30,7 @@ class Tweet_Sync
         add_action('admin_menu', array(&$this, 'adminMenu'));
 
         // Run the plugin code after the page has loaded
-        add_action('shutdown', array(&$this, 'getTweets'));
+        add_action('wp_footer', array(&$this, 'getTweets'), 1); // Low priority, don't block any scripts loading by updating
     }
 
     /**
