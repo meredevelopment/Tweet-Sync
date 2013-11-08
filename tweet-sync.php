@@ -67,9 +67,13 @@ class TweetSync
      */
     public function settingsPage()
     {
-        if (isset($_POST['tweetsync_submitted'])) {
+         if (isset($_POST['tweetsync_submitted'])) {
             $this->_handleInput();
             include 'screens/admin_saved.php';
+
+        } elseif (isset($_GET['exec']) and $_GET['exec'] == 'now') {
+            $this->getTweets();
+            include 'screens/admin_updated.php';
 
         } else include 'screens/admin.php';
     }

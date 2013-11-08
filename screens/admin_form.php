@@ -65,3 +65,5 @@
                 <?php wp_nonce_field('update_tweetsync_settings', 'tweetsync_nonce') ?>
                 <input type="submit" value="Save">
             </form>
+
+            <p><a href="<?= str_replace('%7E', '~', $_SERVER['REQUEST_URI']) ?>&amp;exec=now">Update now</a>.</p>
