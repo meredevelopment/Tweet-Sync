@@ -130,7 +130,11 @@ class TweetSync
 
 if( ! function_exists('__log')) {
     /**
-     * A quick function for logging issues. Used for debugging.
+     * A quick function for logging issues. Used for debugging. I like to add
+     * define('WP_DEBUG_LOG', true); to wp-config.php so the logs are quickly
+     * available in wp-content/debug.log.
+     *
+     * http://fuelyourcoding.com/simple-debugging-with-wordpress/
      */
     function __log($message)
     {
