@@ -72,6 +72,8 @@ class TweetSync
             include 'screens/admin_saved.php';
 
         } elseif (isset($_GET['exec']) and $_GET['exec'] == 'now') {
+            __log('Manually retrieving tweets.');
+
             $this->getTweets();
             include 'screens/admin_updated.php';
 

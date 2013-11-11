@@ -27,6 +27,9 @@ class Tweet2Post
 
     public function __construct()
     {
+        require_once 'PostValidator.php';
+
+        $this->validator  = new PostValidator;
         $this->categoryID = get_option('tweetsync_category_id');
     }
 
@@ -43,7 +46,7 @@ class Tweet2Post
         if (isset($tweets->errors)) return false;
 
         foreach ($tweets as $tweet) {
-            if ($this->_shouldSave($tweet)) {
+            if ($this->validator->isValid($tweet)) {
                 $post = wp_insert_post(array(
                     'post_title'    => $tweet->text,
                     'post_category' => array($this->categoryID),
@@ -56,20 +59,6 @@ class Tweet2Post
             }
         }
 
-        return true;
-    }
-
-    /**
-     * Decide if this tweet should be added as a post or not. I'll actually do
-     * something with this function once I've got the rest of the plug-in
-     * running OK.
-     *
-     * @param object $tweet The tweet object.
-     *
-     * @return bool
-     */
-    private function _shouldSave($tweet)
-    {
         return true;
     }
 
