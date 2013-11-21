@@ -39,7 +39,7 @@
                 <p>
                     <label>
                         Include retweets?
-                        <input type="checkbox" value="<?= get_option('tweetsync_include_retweets') ?>" name="tweetsync_include_retweets">
+                        <input type="checkbox" value="1" name="tweetsync_include_retweets"<?= get_option('tweetsync_include_retweets') ? ' checked="checked"' : '' ?>>
                     </label>
                 </p>
 
