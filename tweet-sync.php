@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Plugin Name: Tweet Sync
  * Plugin URI: https://github.com/by-robots/Tweet-Sync
@@ -9,9 +8,9 @@
  * Author URI: https://github.com/by-robots
  * License: DBAD
  */
+
 class TweetSync
 {
-
     /**
      * Adds our Wordpress actions.
      *
@@ -72,7 +71,7 @@ class TweetSync
             include 'screens/admin_saved.php';
 
         } elseif (isset($_GET['exec']) and $_GET['exec'] == 'now') {
-            __log('Manually retrieving tweets.');
+            $this->_log('Manually retrieving tweets.');
 
             $this->getTweets();
             include 'screens/admin_updated.php';
@@ -90,7 +89,7 @@ class TweetSync
         $twitter = new Twitter;
         $t2p     = new Tweet2Post;
 
-        if ( ! $t2p->saveAsPost($twitter->getTweets())) __log('Error retrieving tweets.');
+        if ( ! $t2p->saveAsPost($twitter->getTweets())) $this->_log('Error retrieving tweets.');
     }
 
     /**
@@ -115,38 +114,56 @@ class TweetSync
     {
         if ( ! isset($_POST['tweetsync_nonce']) or ! wp_verify_nonce($_POST['tweetsync_nonce'], 'update_tweetsync_settings')) exit; // No funny business
 
-        if (isset($_POST['tweetsync_consumer_key']))                                                             update_option('tweetsync_consumer_key', $_POST['tweetsync_consumer_key']);
-        if (isset($_POST['tweetsync_consumer_secret']) and ! empty($_POST['tweetsync_consumer_secret']))         update_option('tweetsync_consumer_secret', $_POST['tweetsync_consumer_secret']);
-        if (isset($_POST['tweetsync_access_token']))                                                             update_option('tweetsync_access_token', $_POST['tweetsync_access_token']);
-        if (isset($_POST['tweetsync_access_token_secret']) and ! empty($_POST['tweetsync_access_token_secret'])) update_option('tweetsync_access_token_secret', $_POST['tweetsync_access_token_secret']);
-        if (isset($_POST['tweetsync_screen_name']))                                                              update_option('tweetsync_screen_name', $_POST['tweetsync_screen_name']);
-        if (isset($_POST['tweetsync_category_id']))                                                              update_option('tweetsync_category_id', $_POST['tweetsync_category_id']);
-        if (isset($_POST['tweetsync_last_tweet']))                                                               update_option('tweetsync_last_tweet', $_POST['tweetsync_last_tweet']);
+        // If the refresh rate has changed update the scedule
+        if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) $this->_updateRefreshRate();
 
-        if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) {
-            update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
+        // Valid keys to save from $_POST
+        $validKeys = [
+            'tweetsync_consumer_key',
+            'tweetsync_consumer_secret',
+            'tweetsync_access_token',
+            'tweetsync_access_token_secret',
+            'tweetsync_screen_name',
+            'tweetsync_category_id',
+            'tweetsync_last_tweet'
+        ];
 
-            // Clear the old refresh schedule, start the new one
-            $this->deactivation();
-            $this->activation();
+        foreach ($_POST as $key => $post) {
+            if (in_array($key, $validKeys)) update_option($key, $post);
         }
     }
 
-}
+    /**
+     * Updates the refresh rate, refreshes the update schedule
+     *
+     * @return void
+     */
+    private function _updateRefreshRate()
+    {
+        update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
+        unset($_POST['tweetsync_refresh_rate']);
 
-if( ! function_exists('__log')) {
+        $this->deactivation();
+        $this->activation();
+    }
+
     /**
      * A quick function for logging issues. Used for debugging. I like to add
      * define('WP_DEBUG_LOG', true); to wp-config.php so the logs are quickly
      * available in wp-content/debug.log.
      *
      * http://fuelyourcoding.com/simple-debugging-with-wordpress/
+     *
+     * @param mixed $message The message to write to the log. Will write a string
+     *                       directly, or print_r an array or object.
+     *
+     * @return void
      */
-    function __log($message)
+    private function _log($message)
     {
         if (WP_DEBUG === true) {
-            if(is_array( $message ) or is_object($message)) error_log(print_r( $message, 1));
-            else                                            error_log($message);
+            if (is_array($message) or is_object($message)) error_log(print_r($message, 1));
+            else                                           error_log($message);
         }
     }
 }
