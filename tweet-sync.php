@@ -8,7 +8,19 @@
  * Author URI: https://github.com/by-robots
  * License: DBAD
  */
+require_once 'twitter-api-php/TwitterAPIExchange.php';
+require_once 'classes/Twitter.php';
+require_once 'classes/Tweet2Post.php';
 
+/**
+ * TweetSync
+ *
+ * @category Plugins
+ * @package  Wordpress
+ * @author   By Robots
+ * @license  DBAD
+ * @link     https://github.com/by-robots
+ */
 class TweetSync
 {
     /**
@@ -18,10 +30,6 @@ class TweetSync
      */
     public function __construct()
     {
-        require_once 'twitter-api-php/TwitterAPIExchange.php';
-        require_once 'classes/Twitter.php';
-        require_once 'classes/Tweet2Post.php';
-
         add_action('admin_menu', array($this, 'adminMenu'));
         add_action('tweetsync_get_tweets', array($this, 'getTweets')); // Create the event
 
@@ -43,6 +51,8 @@ class TweetSync
 
     /**
      * Plugin activation. Schedule auto-updates.
+     *
+     * @return void
      */
     public function activation()
     {
@@ -53,6 +63,8 @@ class TweetSync
 
     /**
      * Plug-in deactivation - remove the scheduled updates.
+     *
+     * @return void
      */
     public function deactivation()
     {
@@ -66,7 +78,7 @@ class TweetSync
      */
     public function settingsPage()
     {
-         if (isset($_POST['tweetsync_submitted'])) {
+        if (isset($_POST['tweetsync_submitted'])) {
             $this->_handleInput();
             include 'screens/admin_saved.php';
 
@@ -94,6 +106,11 @@ class TweetSync
 
     /**
      * Set up the cron execution interval
+     *
+     * @param array $schedules An array of Wordpress cron schedules. We add our new
+     *                         schedule interval to this before giving it back to WP
+     *
+     * @return array Wordpress' schedules array.
      */
     public function cron($schedules)
     {
@@ -116,6 +133,10 @@ class TweetSync
 
         // If the refresh rate has changed update the scedule
         if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) $this->_updateRefreshRate();
+
+        // Toggle retweets
+        if (isset($_POST['tweetsync_include_retweets']) and ! get_option('tweetsync_include_retweets'))      update_option('tweetsync_include_retweets', true);
+        elseif ( ! isset($_POST['tweetsync_include_retweets']) and get_option('tweetsync_include_retweets')) update_option('tweetsync_include_retweets', false);
 
         // Valid keys to save from $_POST
         $validKeys = array(
@@ -141,7 +162,6 @@ class TweetSync
     private function _updateRefreshRate()
     {
         update_option('tweetsync_refresh_rate', $_POST['tweetsync_refresh_rate']);
-        unset($_POST['tweetsync_refresh_rate']);
 
         $this->deactivation();
         $this->activation();

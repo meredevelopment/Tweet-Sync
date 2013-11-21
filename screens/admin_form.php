@@ -38,6 +38,13 @@
 
                 <p>
                     <label>
+                        Include retweets?
+                        <input type="checkbox" value="<?= get_option('tweetsync_include_retweets') ?>" name="tweetsync_include_retweets">
+                    </label>
+                </p>
+
+                <p>
+                    <label>
                         Post category ID:
                         <input type="text" name="tweetsync_category_id" value="<?= get_option('tweetsync_category_id') ?>">
                     </label>
