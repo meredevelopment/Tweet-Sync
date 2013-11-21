@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Saves tweets as Wordpress posts.
  *
@@ -24,7 +23,6 @@
  */
 class Tweet2Post
 {
-
     public function __construct()
     {
         require_once 'PostValidator.php';
@@ -61,5 +59,4 @@ class Tweet2Post
 
         return true;
     }
-
 }

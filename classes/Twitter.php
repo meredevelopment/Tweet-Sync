@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Retrieves tweets via Twitter's implementation of the OAuth 1.1 API.
  *
@@ -26,13 +25,12 @@
  */
 class Twitter
 {
-
     public function __construct()
     {
         // Build our variables
-        $this->since         = get_option('tweetsync_last_tweet');
-        $this->screenName    = get_option('tweetsync_screen_name');
-        $this->settings      = array(
+        $this->since      = get_option('tweetsync_last_tweet');
+        $this->screenName = get_option('tweetsync_screen_name');
+        $this->settings   = array(
             'consumer_key'              => get_option('tweetsync_consumer_key'),
             'consumer_secret'           => get_option('tweetsync_consumer_secret'),
             'oauth_access_token'        => get_option('tweetsync_access_token'),
@@ -71,7 +69,7 @@ class Twitter
 
         // Make the request
         $twitter = new TwitterAPIExchange($this->settings);
+
         return $twitter->setGetfield($getField)->buildOauth($url, 'GET')->performRequest();
     }
-
 }

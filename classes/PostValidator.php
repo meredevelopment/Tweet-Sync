@@ -23,7 +23,6 @@
  */
 class PostValidator
 {
-
     /**
      * Decides if the post should be saved.
      *
@@ -62,5 +61,4 @@ class PostValidator
         if ($wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';")) return true;
         return false;
     }
-
 }
