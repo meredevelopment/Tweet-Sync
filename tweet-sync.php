@@ -118,7 +118,7 @@ class TweetSync
         if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) $this->_updateRefreshRate();
 
         // Valid keys to save from $_POST
-        $validKeys = [
+        $validKeys = array(
             'tweetsync_consumer_key',
             'tweetsync_consumer_secret',
             'tweetsync_access_token',
@@ -126,7 +126,7 @@ class TweetSync
             'tweetsync_screen_name',
             'tweetsync_category_id',
             'tweetsync_last_tweet'
-        ];
+        );
 
         foreach ($_POST as $key => $post) {
             if (in_array($key, $validKeys)) update_option($key, $post);

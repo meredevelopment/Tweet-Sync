@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Validates a given post, deciding if it should be saved or not.
  *
@@ -41,7 +40,6 @@ class PostValidator
         ))) return false;
 
         // More rules here...
-
         return true;
     }
 
@@ -56,7 +54,7 @@ class PostValidator
     {
         global $wpdb; // Yuck
 
-        foreach($fields as $key => $value) {
+        foreach ($fields as $key => $value) {
             if ( ! isset($sqlStr)) $sqlStr = "$key='" . mysql_real_escape_string($value) . "'";
             else                   $sqlStr .= " AND $key='" . mysql_real_escape_string($value) . "'";
         }
