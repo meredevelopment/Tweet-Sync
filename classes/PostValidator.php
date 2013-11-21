@@ -38,7 +38,7 @@ class PostValidator
             'post_date'   => date("Y-m-d H:i:s", strtotime($post->created_at))
         ))) return false;
 
-        // More rules here...
+        if ( ! $this->_isRetweet($post)) return false;
         return true;
     }
 
@@ -60,5 +60,17 @@ class PostValidator
 
         if ($wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';")) return true;
         return false;
+    }
+
+    /**
+     * Check to see if the tweet is a retweet.
+     *
+     * @param object $post The tweet to check
+     *
+     * @return bool
+     */
+    private function _isRetweet($post)
+    {
+        return $post->retweeted ? false : true;
     }
 }

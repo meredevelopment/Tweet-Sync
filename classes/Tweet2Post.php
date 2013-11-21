@@ -45,7 +45,7 @@ class Tweet2Post
 
         foreach ($tweets as $tweet) {
             if ($this->validator->isValid($tweet)) {
-                $post = wp_insert_post(array(
+                wp_insert_post(array(
                     'post_title'    => $tweet->text,
                     'post_category' => array($this->categoryID),
                     'post_status'   => 'publish',
