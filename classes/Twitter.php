@@ -30,6 +30,7 @@ class Twitter
         // Build our variables
         $this->since      = get_option('tweetsync_last_tweet');
         $this->screenName = get_option('tweetsync_screen_name');
+        $this->includeRTs = get_option('tweetsync_include_retweets');
         $this->settings   = array(
             'consumer_key'              => get_option('tweetsync_consumer_key'),
             'consumer_secret'           => get_option('tweetsync_consumer_secret'),
@@ -54,22 +55,34 @@ class Twitter
     }
 
     /**
+     * Build the API request string.
+     *
+     * @return string
+     */
+    private function _buildRequestString()
+    {
+        $getField = '?screen_name=' . $this->screenName . '&trim_user=true';
+        if ( ! $this->includeRTs)                             $getField .= '&include_rts=false';
+        if ($this->since !== false and ! empty($this->since)) $getField .= '&since_id=' . $this->since;
+        return $getField;
+    }
+
+    /**
      * Retrieves the tweets using settings set in Wordpress.
      *
-     * @return object An object created from the JSON response.
+     * @return string The JSON response.
      */
     public function getTweets()
     {
         if ( ! $this->_checkSettings($this->settings) or empty($this->screenName)) return;
 
-        // Set the final variables now we do have everything
-        $url          = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
-        $getField     = '?screen_name=' . $this->screenName;
-        if ($this->since !== false and ! empty($this->since)) $getField .= '&since_id=' . $this->since;
-
         // Make the request
         $twitter = new TwitterAPIExchange($this->settings);
 
-        return $twitter->setGetfield($getField)->buildOauth($url, 'GET')->performRequest();
+        $this->result = $twitter->setGetfield($this->_buildRequestString())
+                                ->buildOauth('https://api.twitter.com/1.1/statuses/user_timeline.json', 'GET')
+                                ->performRequest();
+
+        return $this->result;
     }
 }

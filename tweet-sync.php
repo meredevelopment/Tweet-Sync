@@ -101,7 +101,10 @@ class TweetSync
         $twitter = new Twitter;
         $t2p     = new Tweet2Post;
 
-        if ( ! $t2p->saveAsPost($twitter->getTweets())) $this->_log('Error retrieving tweets.');
+        if ( ! $t2p->saveAsPost($twitter->getTweets())) {
+            $this->_log('Error retrieving tweets.');
+            $this->_log($twitter->result);
+        }
     }
 
     /**

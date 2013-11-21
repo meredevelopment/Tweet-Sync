@@ -32,8 +32,7 @@ class TwitterAPIExchange
      */
     public function __construct(array $settings)
     {
-        if (!in_array('curl', get_loaded_extensions()))
-        {
+        if (!in_array('curl', get_loaded_extensions())) {
             throw new Exception('You need to install cURL, see: http://curl.haxx.se/docs/install.html');
         }
 
@@ -60,13 +59,11 @@ class TwitterAPIExchange
      */
     public function setPostfields(array $array)
     {
-        if (!is_null($this->getGetfield()))
-        {
+        if (!is_null($this->getGetfield())) {
             throw new Exception('You can only choose get OR post fields.');
         }
 
-        if (isset($array['status']) && substr($array['status'], 0, 1) === '@')
-        {
+        if (isset($array['status']) && substr($array['status'], 0, 1) === '@') {
             $array['status'] = sprintf("\0%s", $array['status']);
         }
 
@@ -84,8 +81,7 @@ class TwitterAPIExchange
      */
     public function setGetfield($string)
     {
-        if (!is_null($this->getPostfields()))
-        {
+        if (!is_null($this->getPostfields())) {
             throw new Exception('You can only choose get OR post fields.');
         }
 
@@ -122,14 +118,13 @@ class TwitterAPIExchange
      * Build the Oauth object using params set in construct and additionals
      * passed to this method. For v1.1, see: https://dev.twitter.com/docs/api/1.1
      *
-     * @param string $url The API url to use. Example: https://api.twitter.com/1.1/search/tweets.json
-     * @param string $requestMethod Either POST or GET
+     * @param  string              $url           The API url to use. Example: https://api.twitter.com/1.1/search/tweets.json
+     * @param  string              $requestMethod Either POST or GET
      * @return \TwitterAPIExchange Instance of self for method chaining
      */
     public function buildOauth($url, $requestMethod)
     {
-        if (!in_array(strtolower($requestMethod), array('post', 'get')))
-        {
+        if (!in_array(strtolower($requestMethod), array('post', 'get'))) {
             throw new Exception('Request method must be either POST or GET');
         }
 
@@ -149,11 +144,9 @@ class TwitterAPIExchange
 
         $getfield = $this->getGetfield();
 
-        if (!is_null($getfield))
-        {
+        if (!is_null($getfield)) {
             $getfields = str_replace('?', '', explode('&', $getfield));
-            foreach ($getfields as $g)
-            {
+            foreach ($getfields as $g) {
                 $split = explode('=', $g);
                 $oauth[$split[0]] = $split[1];
             }
@@ -179,8 +172,7 @@ class TwitterAPIExchange
      */
     public function performRequest($return = true)
     {
-        if (!is_bool($return))
-        {
+        if (!is_bool($return)) {
             throw new Exception('performRequest parameter must be true or false');
         }
 
@@ -197,14 +189,10 @@ class TwitterAPIExchange
             CURLOPT_TIMEOUT => 10,
         );
 
-        if (!is_null($postfields))
-        {
+        if (!is_null($postfields)) {
             $options[CURLOPT_POSTFIELDS] = $postfields;
-        }
-        else
-        {
-            if ($getfield !== '')
-            {
+        } else {
+            if ($getfield !== '') {
                 $options[CURLOPT_URL] .= $getfield;
             }
         }
@@ -222,7 +210,7 @@ class TwitterAPIExchange
      *
      * @param string $baseURI
      * @param string $method
-     * @param array $params
+     * @param array  $params
      *
      * @return string Built base string
      */
@@ -231,8 +219,7 @@ class TwitterAPIExchange
         $return = array();
         ksort($params);
 
-        foreach($params as $key=>$value)
-        {
+        foreach ($params as $key=>$value) {
             $return[] = "$key=" . $value;
         }
 
@@ -251,12 +238,12 @@ class TwitterAPIExchange
         $return = 'Authorization: OAuth ';
         $values = array();
 
-        foreach($oauth as $key => $value)
-        {
+        foreach ($oauth as $key => $value) {
             $values[] = "$key=\"" . rawurlencode($value) . "\"";
         }
 
         $return .= implode(', ', $values);
+
         return $return;
     }
 

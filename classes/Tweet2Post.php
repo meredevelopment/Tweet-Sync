@@ -51,10 +51,10 @@ class Tweet2Post
                     'post_status'   => 'publish',
                     'post_date'     => date("Y-m-d H:i:s", strtotime($tweet->created_at))
                 ));
-
-                // Update the last tweet retrived value for caching if it's more recent than the one we currently have stored
-                if ( ! get_option('tweetsync_last_tweet') or $tweet->id > get_option('tweetsync_last_tweet')) update_option('tweetsync_last_tweet', $tweet->id);
             }
+
+            // Update the last tweet retrived value for caching if it's more recent than the one we currently have stored
+            if ( ! get_option('tweetsync_last_tweet') or $tweet->id > get_option('tweetsync_last_tweet')) update_option('tweetsync_last_tweet', $tweet->id);
         }
 
         return true;

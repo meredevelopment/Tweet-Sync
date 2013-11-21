@@ -38,7 +38,7 @@ class PostValidator
             'post_date'   => date("Y-m-d H:i:s", strtotime($post->created_at))
         ))) return false;
 
-        if ( ! $this->_isRetweet($post)) return false;
+        if ($this->_isRetweet($post) and ! get_option('tweetsync_include_retweets')) return false;
         return true;
     }
 
@@ -54,7 +54,7 @@ class PostValidator
         global $wpdb; // Yuck
 
         foreach ($fields as $key => $value) {
-            if ( ! isset($sqlStr)) $sqlStr = "$key='" . mysql_real_escape_string($value) . "'";
+            if ( ! isset($sqlStr)) $sqlStr  = "$key='" . mysql_real_escape_string($value) . "'";
             else                   $sqlStr .= " AND $key='" . mysql_real_escape_string($value) . "'";
         }
 
@@ -63,7 +63,7 @@ class PostValidator
     }
 
     /**
-     * Check to see if the tweet is a retweet.
+     * Check to see if the tweet is an old style retweet.
      *
      * @param object $post The tweet to check
      *
@@ -71,6 +71,6 @@ class PostValidator
      */
     private function _isRetweet($post)
     {
-        return $post->retweeted ? false : true;
+        return false;
     }
 }
