@@ -35,6 +35,8 @@ class LinkUp
         $tweet = $this->_linkURLs($tweet);
         $tweet = $this->_linkHashtag($tweet);
         $tweet = $this->_linkMentions($tweet);
+
+        return $tweet;
     }
 
     /**
@@ -70,6 +72,6 @@ class LinkUp
      */
     private function _linkURLs($tweet)
     {
-        return preg_replace("/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/g", '<a href="$0">$0</a> ', $tweet);
+        return preg_replace("/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/", '<a href="$0">$0</a> ', $tweet);
     }
 }
