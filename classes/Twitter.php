@@ -10,7 +10,7 @@
  * @package   Wordpress
  * @author    By Robots
  * @copyright 2013 By Robots
- * @license   Usage strictly forbidden.
+ * @license   DBAD
  * @link      https://github.com/by-robots
  */
 
@@ -20,7 +20,7 @@
  * @category TweetSync
  * @package  Wordpress
  * @author   By Robots
- * @license  Usage strictly forbidden.
+ * @license  DBAD
  * @link     https://github.com/dangates/Tweet-Sync
  */
 class Twitter
