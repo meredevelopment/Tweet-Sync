@@ -11,6 +11,7 @@
 require_once 'twitter-api-php/TwitterAPIExchange.php';
 require_once 'classes/Twitter.php';
 require_once 'classes/Tweet2Post.php';
+require_once 'PostValidator.php';
 
 /**
  * TweetSync
@@ -103,7 +104,7 @@ class TweetSync
     public function getTweets()
     {
         $twitter = new Twitter;
-        $t2p     = new Tweet2Post;
+        $t2p     = new Tweet2Post(new PostValidator);
 
         if (!$t2p->saveAsPost($twitter->getTweets())) {
             $this->_log('Error retrieving tweets.');

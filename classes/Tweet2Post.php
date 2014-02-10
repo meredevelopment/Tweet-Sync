@@ -23,11 +23,9 @@
  */
 class Tweet2Post
 {
-    public function __construct()
+    public function __construct($validator)
     {
-        require_once 'PostValidator.php';
-
-        $this->validator  = new PostValidator;
+        $this->validator  = $validator;
         $this->categoryID = get_option('tweetsync_category_id');
     }
 
