@@ -41,7 +41,9 @@ class Tweet2Post
     public function saveAsPost($json)
     {
         $tweets = json_decode($json);
-        if (isset($tweets->errors)) return false;
+        if (isset($tweets->errors)) {
+            return false;
+        }
 
         foreach ($tweets as $tweet) {
             if ($this->validator->isValid($tweet)) {
@@ -54,7 +56,9 @@ class Tweet2Post
             }
 
             // Update the last tweet retrived value for caching if it's more recent than the one we currently have stored
-            if ( ! get_option('tweetsync_last_tweet') or $tweet->id > get_option('tweetsync_last_tweet')) update_option('tweetsync_last_tweet', $tweet->id);
+            if (!get_option('tweetsync_last_tweet') or $tweet->id > get_option('tweetsync_last_tweet')) {
+                update_option('tweetsync_last_tweet', $tweet->id);
+            }
         }
 
         return true;

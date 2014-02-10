@@ -62,8 +62,14 @@ class Twitter
     private function _buildRequestString()
     {
         $getField = '?screen_name=' . $this->screenName . '&trim_user=true';
-        if ( ! $this->includeRTs)                             $getField .= '&include_rts=false';
-        if ($this->since !== false and ! empty($this->since)) $getField .= '&since_id=' . $this->since;
+        if (!$this->includeRTs) {
+            $getField .= '&include_rts=false';
+        }
+
+        if ($this->since !== false and ! empty($this->since)) {
+            $getField .= '&since_id=' . $this->since;
+        }
+
         return $getField;
     }
 
@@ -74,7 +80,9 @@ class Twitter
      */
     public function getTweets()
     {
-        if ( ! $this->_checkSettings($this->settings) or empty($this->screenName)) return;
+        if (!$this->_checkSettings($this->settings) or empty($this->screenName)) {
+            return;
+        }
 
         // Make the request
         $twitter = new TwitterAPIExchange($this->settings);

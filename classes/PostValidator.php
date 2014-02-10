@@ -36,10 +36,11 @@ class PostValidator
             'post_title'  => $post->text,
             'post_status' => 'publish',
             'post_date'   => date("Y-m-d H:i:s", strtotime($post->created_at))
-        ))) return false;
+        ))) {
+            return false;
+        }
 
-        if ($this->_isRetweet($post) and ! get_option('tweetsync_include_retweets')) return false;
-        return true;
+        return $this->_isRetweet($post) and !get_option('tweetsync_include_retweets') ? false : true;
     }
 
     /**
@@ -54,16 +55,18 @@ class PostValidator
         global $wpdb; // Yuck
 
         foreach ($fields as $key => $value) {
-            if ( ! isset($sqlStr)) $sqlStr  = "$key='" . mysql_real_escape_string($value) . "'";
-            else                   $sqlStr .= " AND $key='" . mysql_real_escape_string($value) . "'";
+            if (!isset($sqlStr)) {
+                $sqlStr  = "$key='" . mysql_real_escape_string($value) . "'";
+            } else {
+                $sqlStr .= " AND $key='" . mysql_real_escape_string($value) . "'";
+            }
         }
 
-        if ($wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';")) return true;
-        return false;
+        return $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';") ? true : false;
     }
 
     /**
-     * Check to see if the tweet is an old style retweet.
+     * Check to see if the tweet is an old style retweet. (TO DO)
      *
      * @param object $post The tweet to check
      *

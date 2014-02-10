@@ -56,7 +56,9 @@ class TweetSync
      */
     public function activation()
     {
-        if (wp_next_scheduled('tweetsync_get_tweets') !== false) $this->deactivation();
+        if (wp_next_scheduled('tweetsync_get_tweets') !== false) {
+            $this->deactivation();
+        }
 
         wp_schedule_event(time(), 'tweetsync', 'tweetsync_get_tweets'); // Schedule the event
     }
@@ -88,7 +90,9 @@ class TweetSync
             $this->getTweets();
             include 'screens/admin_updated.php';
 
-        } else include 'screens/admin.php';
+        } else {
+            include 'screens/admin.php';
+        }
     }
 
     /**
@@ -101,7 +105,7 @@ class TweetSync
         $twitter = new Twitter;
         $t2p     = new Tweet2Post;
 
-        if ( ! $t2p->saveAsPost($twitter->getTweets())) {
+        if (!$t2p->saveAsPost($twitter->getTweets())) {
             $this->_log('Error retrieving tweets.');
             $this->_log($twitter->result);
         }
@@ -132,14 +136,21 @@ class TweetSync
      */
     private function _handleInput()
     {
-        if ( ! isset($_POST['tweetsync_nonce']) or ! wp_verify_nonce($_POST['tweetsync_nonce'], 'update_tweetsync_settings')) exit; // No funny business
+        if (!isset($_POST['tweetsync_nonce']) or ! wp_verify_nonce($_POST['tweetsync_nonce'], 'update_tweetsync_settings')) {
+            exit; // No funny business
+        }
 
         // If the refresh rate has changed update the scedule
-        if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) $this->_updateRefreshRate();
+        if (isset($_POST['tweetsync_refresh_rate']) and $_POST['tweetsync_refresh_rate'] != get_option('tweetsync_refresh_rate')) {
+            $this->_updateRefreshRate();
+        }
 
         // Toggle retweets
-        if (isset($_POST['tweetsync_include_retweets']) and ! get_option('tweetsync_include_retweets'))      update_option('tweetsync_include_retweets', true);
-        elseif ( ! isset($_POST['tweetsync_include_retweets']) and get_option('tweetsync_include_retweets')) update_option('tweetsync_include_retweets', false);
+        if (isset($_POST['tweetsync_include_retweets']) and !get_option('tweetsync_include_retweets')) {
+            update_option('tweetsync_include_retweets', true);
+        } elseif (!isset($_POST['tweetsync_include_retweets']) and get_option('tweetsync_include_retweets')) {
+            update_option('tweetsync_include_retweets', false);
+        }
 
         // Valid keys to save from $_POST
         $validKeys = array(
@@ -153,7 +164,9 @@ class TweetSync
         );
 
         foreach ($_POST as $key => $post) {
-            if (in_array($key, $validKeys)) update_option($key, $post);
+            if (in_array($key, $validKeys)) {
+                update_option($key, $post);
+            }
         }
     }
 
@@ -185,8 +198,11 @@ class TweetSync
     private function _log($message)
     {
         if (WP_DEBUG === true) {
-            if (is_array($message) or is_object($message)) error_log(print_r($message, 1));
-            else                                           error_log($message);
+            if (is_array($message) or is_object($message)) {
+                error_log(print_r($message, 1));
+            } else {
+                error_log($message);
+            }
         }
     }
 }
