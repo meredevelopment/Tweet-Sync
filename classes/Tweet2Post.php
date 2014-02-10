@@ -47,7 +47,7 @@ class Tweet2Post
         foreach ($tweets as $tweet) {
             if ($this->validator->isValid($tweet)) {
                 wp_insert_post(array(
-                    'post_title'    => $tweet->text,
+                    'post_title'    => $this->linker($tweet->text),
                     'post_category' => array($this->categoryID),
                     'post_status'   => 'publish',
                     'post_date'     => date("Y-m-d H:i:s", strtotime($tweet->created_at))
