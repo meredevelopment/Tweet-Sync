@@ -41,13 +41,14 @@ class Tweet2Post
     {
         $tweets = json_decode($json);
         if (isset($tweets->errors)) {
+            error_log('Error retrieving tweets: ' . print_r($tweets, 1));
             return false;
         }
 
         foreach ($tweets as $tweet) {
             if ($this->validator->isValid($tweet)) {
                 wp_insert_post(array(
-                    'post_title'    => $this->linker($tweet->text),
+                    'post_title'    => $this->linker->link($tweet->text),
                     'post_category' => array($this->categoryID),
                     'post_status'   => 'publish',
                     'post_date'     => date("Y-m-d H:i:s", strtotime($tweet->created_at))

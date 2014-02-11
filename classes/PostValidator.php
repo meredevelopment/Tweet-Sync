@@ -23,6 +23,11 @@
  */
 class PostValidator
 {
+    public function __construct($linker)
+    {
+        $this->linker = $linker;
+    }
+
     /**
      * Decides if the post should be saved.
      *
@@ -33,14 +38,15 @@ class PostValidator
     public function isValid($post)
     {
         if ($this->_postByTitle(array(
-            'post_title'  => $post->text,
+            'post_title'  => $this->linker->link($post->text),
             'post_status' => 'publish',
             'post_date'   => date("Y-m-d H:i:s", strtotime($post->created_at))
         ))) {
             return false;
         }
 
-        return $this->_isRetweet($post) and !get_option('tweetsync_include_retweets') ? false : true;
+        // TO DO: Retweets
+        return true;
     }
 
     /**
@@ -48,7 +54,7 @@ class PostValidator
      *
      * @param array $fields The fields to filter by
      *
-     * @return object | false
+     * @return bool
      */
     private function _postByTitle($fields)
     {
@@ -62,7 +68,13 @@ class PostValidator
             }
         }
 
-        return $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';") ? true : false;
+        $res = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE $sqlStr AND post_type='post';");
+
+        if (empty($res)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

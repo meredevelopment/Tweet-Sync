@@ -106,7 +106,7 @@ class TweetSync
     {
         $twitter = new Twitter;
         $t2p     = new Tweet2Post(
-            new PostValidator,
+            new PostValidator(new LinkUp),
             new LinkUp
         );
 
@@ -170,7 +170,11 @@ class TweetSync
 
         foreach ($_POST as $key => $post) {
             if (in_array($key, $validKeys)) {
-                update_option($key, $post);
+                if ($key == 'tweetsync_last_tweet') {
+                    update_option($key, $post);
+                } elseif (!empty($post)) {
+                    update_option($key, $post);
+                }
             }
         }
     }
