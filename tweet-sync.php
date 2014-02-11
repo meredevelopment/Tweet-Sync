@@ -12,7 +12,7 @@ require_once __DIR__ . '/twitter-api-php/TwitterAPIExchange.php';
 require_once __DIR__ . '/classes/Twitter.php';
 require_once __DIR__ . '/classes/Tweet2Post.php';
 require_once __DIR__ . '/classes/PostValidator.php';
-require_once __DIR__ . '/classes/LinkUp.php'
+require_once __DIR__ . '/classes/LinkUp.php';
 
 /**
  * TweetSync
