@@ -62,9 +62,9 @@ class PostValidator
 
         foreach ($fields as $key => $value) {
             if (!isset($sqlStr)) {
-                $sqlStr  = "$key='" . mysql_real_escape_string($value) . "'";
+                $sqlStr  = "$key='" . esc_sql($value) . "'";
             } else {
-                $sqlStr .= " AND $key='" . mysql_real_escape_string($value) . "'";
+                $sqlStr .= " AND $key='" . esc_sql($value) . "'";
             }
         }
 
